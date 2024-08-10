@@ -1,7 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { db } from "~/server/db";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const posts = await db.query.posts.findMany()
+  console.log(posts)
 
   const dummyData = [
     "https://utfs.io/f/15bb4da8-8cf6-4717-a427-78ac79e84089-exz8ak.webp",
@@ -19,8 +24,20 @@ export default function HomePage() {
   })
   return (
     <main className="">
+      <div>
+        <h2 className="text-lg">
+          Dynamic Posts
+        </h2>
+        <div>
+          {posts.map((post)=>{
+            return <li key={post.id}>
+              {post.name}
+            </li>
+          })}
+        </div>
+      </div>
       <div className="flex flex-wrap gap-4 items-center justify-center my-4">
-        {[...mockImages,...mockImages, ...mockImages].map((item)=>{
+        {mockImages.map((item)=>{
           return <div key={item.id} className="w-48">
               {/* <Image src={item.url} height={300} width={300} alt=""/> */}
               <img src={item.url}/>
